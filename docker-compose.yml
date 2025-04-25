@@ -1,0 +1,14 @@
+services:
+  api:
+    build: .
+    container_name: projectmark_api
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run dev
+    environment:
+      - NODE_ENV=development
+      - JWT_SECRET=16ea6e3d97e3e4eb2e35d566366fd637fd5a3a917030f4dd6b32e6e224596de7e3ac0afb8277d8571da2a6b9696873d546fc58ff881aa5d744a6709f45ad0074
+      - JWT_EXPIRES_IN=1h
