@@ -1,7 +1,7 @@
 import { AppDataSource } from "../shared/database";
 import { User } from "./entities/user.entity";
-import { CreateUserDto } from "./dto/create-user";
-import { UpdateUserDto } from "./dto/update-user";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
 
 export class UserService {
   private userRepository = AppDataSource.getRepository(User);

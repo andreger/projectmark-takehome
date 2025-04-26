@@ -1,6 +1,6 @@
 import { AppDataSource } from "../shared/database";
-import { CreateTopicDto } from "./dto/create-topic";
-import { UpdateTopicDto } from "./dto/update-topic";
+import { CreateTopicDto } from "./dto/create-topic.dto";
+import { UpdateTopicDto } from "./dto/update-topic.dto";
 import { TopicVersion } from "./entities/topic-version.entity";
 import { Topic } from "./entities/topic.entity";
 import { IVersionFactory } from "./factories/IVersionFactory";

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { AuthService } from "./auth.service";
-import { LoginDto } from "./dto/login";
+import { LoginDto } from "./dto/login.dto";
 
 export class AuthController {
   constructor(private authService: AuthService) {}

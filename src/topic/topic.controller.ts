@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { TopicService } from "./topic.service";
-import { CreateTopicDto } from "./dto/create-topic";
-import { UpdateTopicDto } from "./dto/update-topic";
+import { CreateTopicDto } from "./dto/create-topic.dto";
+import { UpdateTopicDto } from "./dto/update-topic.dto";
 
 export class TopicController {
   private topicService = new TopicService();
