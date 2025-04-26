@@ -1,9 +1,8 @@
-// import { app } from "./app";
-// import { AppDataSource } from "./db";
+import { createApp } from "./app";
 
-// const PORT = process.env.PORT ?? 3000;
+const PORT = 3000;
+const app = createApp();
 
-// (async () => {
-//   await AppDataSource.initialize();
-//   app.listen(PORT, () => console.log(`API running on :${PORT}`));
-// })();
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
