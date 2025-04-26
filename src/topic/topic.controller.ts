@@ -1,7 +1,8 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { TopicService } from "./topic.service";
 import { CreateTopicDto } from "./dto/create-topic.dto";
 import { UpdateTopicDto } from "./dto/update-topic.dto";
+import { NotFoundError } from "../shared/errors";
 
 export class TopicController {
   private topicService = new TopicService();
@@ -25,20 +26,30 @@ export class TopicController {
     }
   }
 
-  async getTopic(req: Request, res: Response) {
-    try {
-      const { id } = req.params;
-      const { version } = req.query;
-      const topic = await this.topicService.getTopic(
-        id,
-        version ? Number(version) : undefined
-      );
-      topic
-        ? res.json(topic)
-        : res.status(404).json({ error: "Topic not found" });
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
-    }
+  async getTopic(req: Request, res: Response, next: NextFunction) {
+    // try {
+    //   const { id } = req.params;
+    //   const { version } = req.query;
+    //   const topic = await this.topicService.getTopic(
+    //     id,
+    //     version ? Number(version) : undefined
+    //   );
+    //   topic
+    //     ? res.json(topic)
+    //     : res.status(404).json({ error: "Topic not found" });
+    // } catch (error: any) {
+    //   res.status(500).json({ error: error.message });
+    // }
+    const { id } = req.params;
+    const { version } = req.query;
+    const topic = await this.topicService.getTopic(
+      id,
+      version ? Number(version) : undefined
+    );
+
+    if (!topic) return next(new NotFoundError("Topic not found"));
+
+    res.json(topic);
   }
 
   async updateTopic(req: Request, res: Response) {
