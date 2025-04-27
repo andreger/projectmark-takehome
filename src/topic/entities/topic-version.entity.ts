@@ -1,18 +1,9 @@
-import { Entity, Column, ManyToOne } from "typeorm";
+import { Entity, ManyToOne } from "typeorm";
 import { Topic } from "./topic.entity";
-import { BaseEntity } from "../../shared/entities/base.entity";
+import { BaseTopic } from "./base-topic.entity";
 
 @Entity()
-export class TopicVersion extends BaseEntity {
-  @Column()
-  name: string;
-
-  @Column("text")
-  content: string;
-
-  @Column()
-  version: number;
-
+export class TopicVersion extends BaseTopic {
   @ManyToOne(() => Topic, (topic) => topic.children)
   topic: Topic;
 }

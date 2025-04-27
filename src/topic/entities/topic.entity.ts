@@ -1,14 +1,8 @@
-import { Entity, Column, ManyToOne, OneToMany, VersionColumn } from "typeorm";
-import { VersionableEntity } from "../../shared/entities/versionable.entity";
+import { Entity, ManyToOne, OneToMany } from "typeorm";
+import { BaseTopic } from "./base-topic.entity";
 
 @Entity()
-export class Topic extends VersionableEntity {
-  @Column()
-  name: string;
-
-  @Column("text")
-  content: string;
-
+export class Topic extends BaseTopic {
   @ManyToOne(() => Topic, (topic) => topic.children)
   parentTopic: Topic;
 
