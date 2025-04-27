@@ -8,7 +8,6 @@ import { errorHandler } from "./shared/middleware/error-handler.middleware";
 export const createApp = () => {
   const app = express();
 
-  // Middleware
   app.use(express.json());
 
   // Routes
@@ -21,6 +20,7 @@ export const createApp = () => {
     res.json({ message: `Hello ${req.user?.email}!` });
   });
 
+  // Error handler
   app.use(errorHandler);
 
   return app;

@@ -1,4 +1,5 @@
 import { AppDataSource } from "../shared/database";
+import { InternalServerError, NotFoundError } from "../shared/errors";
 import { CreateTopicDto } from "./dto/create-topic.dto";
 import { UpdateTopicDto } from "./dto/update-topic.dto";
 import { TopicVersion } from "./entities/topic-version.entity";
@@ -24,7 +25,9 @@ export class TopicService {
       const parentTopic = await this.topicRepository.findOneBy({
         id: dto.parentTopicId,
       });
-      if (!parentTopic) throw new Error("Parent topic not found");
+
+      if (!parentTopic) throw new NotFoundError("Parent topic not found");
+
       topic.parentTopic = parentTopic;
     }
 
@@ -51,7 +54,8 @@ export class TopicService {
       const currentTopic = await manager.findOne(Topic, {
         where: { id },
       });
-      if (!currentTopic) throw new Error("Topic not found");
+
+      if (!currentTopic) throw new NotFoundError("Topic not found");
 
       // Create version history
       await manager.save(TopicVersion, {
@@ -71,16 +75,28 @@ export class TopicService {
 
       // Return updated entity
       const updatedTopic = await manager.findOne(Topic, { where: { id } });
-      if (!updatedTopic) {
-        throw new Error("Failed to retrieve updated topic");
-      }
+      if (!updatedTopic)
+        throw new InternalServerError("Failed to retrieve updated topic");
 
       return updatedTopic;
     });
   }
 
   async deleteTopic(id: string): Promise<void> {
-    await this.topicRepository.delete(id);
+    await this.topicRepository.manager.transaction(async (manager) => {
+      const topic = await manager.findOne(Topic, {
+        where: { id },
+        relations: ["versions"],
+      });
+
+      if (!topic) throw new NotFoundError("Topic not found");
+
+      // Delete all versions related to the topic
+      await manager.delete(TopicVersion, { topic: { id } });
+
+      // Delete the topic itself
+      await manager.delete(Topic, id);
+    });
   }
 
   async getTopicTree(id: string): Promise<any> {
@@ -89,7 +105,7 @@ export class TopicService {
       relations: ["children"],
     });
 
-    if (!topic) return null;
+    if (!topic) throw new NotFoundError("Topic not found");
 
     const children = await Promise.all(
       topic.children.map((child) => this.getTopicTree(child.id))
