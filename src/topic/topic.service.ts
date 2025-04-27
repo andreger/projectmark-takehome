@@ -100,17 +100,21 @@ export class TopicService {
   }
 
   async getTopicTree(id: string): Promise<any> {
-    const topic = await this.topicRepository.findOne({
-      where: { id },
-      relations: ["children"],
-    });
+    const buildTree = async (topicId: string): Promise<any> => {
+      const topic = await this.topicRepository.findOne({
+        where: { id: topicId },
+        relations: ["children"],
+      });
 
-    if (!topic) throw new NotFoundError("Topic not found");
+      if (!topic) throw new NotFoundError("Topic not found");
 
-    const children = await Promise.all(
-      topic.children.map((child) => this.getTopicTree(child.id))
-    );
+      const children = await Promise.all(
+        topic.children.map((child) => buildTree(child.id))
+      );
 
-    return { ...topic, children };
+      return { ...topic, children };
+    };
+
+    return buildTree(id);
   }
 }
