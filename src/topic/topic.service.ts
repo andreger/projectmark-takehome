@@ -119,13 +119,11 @@ export class TopicService {
 
       if (!topic) throw new NotFoundError("Topic not found");
 
-      // const children = await Promise.all(
-      //   topic.children.map((child) => buildTree(child.id))
-      // );
+      const children = await Promise.all(
+        topic.children.map((child) => buildTree(child.id))
+      );
 
-      // return { ...topic, children };
-
-      return topic;
+      return { ...topic, children };
     };
 
     return buildTree(id);

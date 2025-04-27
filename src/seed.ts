@@ -35,12 +35,13 @@ async function seed() {
   for (const u of demoUsers) {
     await userService.createUser(u);
   }
-  /*
+
   const tsRoot = await topicService.createTopic({
     name: "TypeScript Basics",
     content: "Intro to TS",
   });
-  await topicService.createTopic({
+
+  const tsPrimitives = await topicService.createTopic({
     name: "Primitive Types",
     content: "string | number | boolean …",
     parentTopicId: tsRoot.id,
@@ -51,6 +52,23 @@ async function seed() {
     parentTopicId: tsRoot.id,
   });
 
+  const tsInterfaces = await topicService.createTopic({
+    name: "Interfaces",
+    content: "Interfaces are like classes",
+    parentTopicId: tsPrimitives.id,
+  });
+  await topicService.createTopic({
+    name: "Classes",
+    content: "Classes are like interfaces",
+    parentTopicId: tsPrimitives.id,
+  });
+
+  await topicService.createTopic({
+    name: "Functions",
+    content: "Functions are like functions",
+    parentTopicId: tsInterfaces.id,
+  });
+  /*
   async function buildDeepTree(
     parentId: string | undefined,
     level: number,
