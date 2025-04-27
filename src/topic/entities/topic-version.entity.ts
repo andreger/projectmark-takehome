@@ -1,11 +1,9 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
 import { Topic } from "./topic.entity";
+import { BaseEntity } from "../../shared/entities/base.entity";
 
 @Entity()
-export class TopicVersion {
-  @PrimaryGeneratedColumn("uuid")
-  id: string;
-
+export class TopicVersion extends BaseEntity {
   @Column()
   name: string;
 
@@ -14,9 +12,6 @@ export class TopicVersion {
 
   @Column()
   version: number;
-
-  @Column({ type: "datetime" })
-  createdAt: Date;
 
   @ManyToOne(() => Topic, (topic) => topic.children)
   topic: Topic;

@@ -1,20 +1,9 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  OneToMany,
-  CreateDateColumn,
-  UpdateDateColumn,
-  BaseEntity,
-} from "typeorm";
+import { Entity, Column, ManyToOne, OneToMany } from "typeorm";
 import { TopicVersion } from "./topic-version.entity";
+import { BaseEntity } from "../../shared/entities/base.entity";
 
 @Entity()
-export class Topic {
-  @PrimaryGeneratedColumn("uuid")
-  id: string;
-
+export class Topic extends BaseEntity {
   @Column()
   name: string;
 
@@ -22,13 +11,7 @@ export class Topic {
   content: string;
 
   @Column({ default: 1 })
-  version: number = 1;
-
-  @CreateDateColumn({ type: "datetime" })
-  createdAt: Date;
-
-  @UpdateDateColumn({ type: "datetime" })
-  updatedAt: Date;
+  version: number;
 
   @ManyToOne(() => Topic, (topic) => topic.children)
   parentTopic: Topic;

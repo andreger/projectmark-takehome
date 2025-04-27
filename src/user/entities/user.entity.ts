@@ -1,9 +1,5 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-} from "typeorm";
+import { Entity, Column } from "typeorm";
+import { BaseEntity } from "../../shared/entities/base.entity";
 
 export enum UserRole {
   ADMIN = "admin",
@@ -12,10 +8,7 @@ export enum UserRole {
 }
 
 @Entity()
-export class User {
-  @PrimaryGeneratedColumn("uuid")
-  id: string;
-
+export class User extends BaseEntity {
   @Column({ unique: true })
   email: string;
 
@@ -27,7 +20,4 @@ export class User {
 
   @Column()
   role: string;
-
-  @CreateDateColumn()
-  createdAt: Date;
 }
