@@ -1,7 +1,7 @@
 import { DataSource } from "typeorm";
 import path from "path";
 import { Topic } from "../../topic/entities/topic.entity";
-import { TopicVersion } from "../../topic/entities/topic-version.entity";
+import { TopicHistory } from "../../topic/entities/topic-history.entity";
 import { User } from "../../user/entities/user.entity";
 
 export const AppDataSource = new DataSource({
@@ -10,7 +10,7 @@ export const AppDataSource = new DataSource({
   database: path.join(__dirname, "../../../database.sqlite"),
   synchronize: true,
   logging: true,
-  entities: [Topic, TopicVersion, User],
+  entities: [Topic, TopicHistory, User],
 });
 
 AppDataSource.initialize()

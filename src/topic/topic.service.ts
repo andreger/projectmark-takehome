@@ -2,14 +2,16 @@ import { AppDataSource } from "../shared/database";
 import { InternalServerError, NotFoundError } from "../shared/errors";
 import { CreateTopicDto } from "./dto/create-topic.dto";
 import { UpdateTopicDto } from "./dto/update-topic.dto";
-import { TopicVersion } from "./entities/topic-version.entity";
+import { TopicHistory } from "./entities/topic-history.entity";
 import { Topic } from "./entities/topic.entity";
-import { IVersionFactory } from "./factories/IVersionFactory";
-import { StandardVersionFactory } from "./factories/StandardVersionFactory";
+import {
+  TopicVersionFactory,
+  TopicVersionType,
+} from "./factories/topic-version.factory";
 
 export class TopicService {
   private topicRepository = AppDataSource.getRepository(Topic);
-  private versionFactory: IVersionFactory = new StandardVersionFactory();
+  private topicVersionFactory: TopicVersionFactory = new TopicVersionFactory();
 
   async listTopics(): Promise<Topic[]> {
     const queryBuilder = this.topicRepository.createQueryBuilder("topic");
@@ -31,7 +33,11 @@ export class TopicService {
       topic.parentTopic = parentTopic;
     }
 
-    return await this.topicRepository.save(topic);
+    const newTopic = this.topicVersionFactory
+      .getVersion(TopicVersionType.CURRENT)
+      .createTopicVersion(topic);
+
+    return await this.topicRepository.save(newTopic);
   }
 
   async getTopic(id: string, version?: number): Promise<Topic | null> {
@@ -57,19 +63,24 @@ export class TopicService {
 
       if (!currentTopic) throw new NotFoundError("Topic not found");
 
-      // Create version history
-      await manager.save(TopicVersion, {
-        ...currentTopic,
-        id: undefined,
-        createdAt: currentTopic.updatedAt,
-        topic: currentTopic,
-      });
+      // Create topic history
+      const topicHistory = this.topicVersionFactory
+        .getVersion(TopicVersionType.ARQUIVED)
+        .createTopicVersion(currentTopic);
+
+      await manager.save(TopicHistory, topicHistory);
 
       // Create new version
-      const newVersion = this.versionFactory.createVersion(
-        currentTopic,
-        dto.content ?? ""
-      );
+      if (dto.name) {
+        currentTopic.name = dto.name;
+      }
+      if (dto.content) {
+        currentTopic.content = dto.content;
+      }
+
+      const newVersion = this.topicVersionFactory
+        .getVersion(TopicVersionType.CURRENT)
+        .createTopicVersion(currentTopic);
 
       await manager.update(Topic, id, newVersion);
 
@@ -92,7 +103,7 @@ export class TopicService {
       if (!topic) throw new NotFoundError("Topic not found");
 
       // Delete all versions related to the topic
-      await manager.delete(TopicVersion, { topic: { id } });
+      await manager.delete(TopicHistory, { topic: { id } });
 
       // Delete the topic itself
       await manager.delete(Topic, id);
@@ -108,11 +119,13 @@ export class TopicService {
 
       if (!topic) throw new NotFoundError("Topic not found");
 
-      const children = await Promise.all(
-        topic.children.map((child) => buildTree(child.id))
-      );
+      // const children = await Promise.all(
+      //   topic.children.map((child) => buildTree(child.id))
+      // );
 
-      return { ...topic, children };
+      // return { ...topic, children };
+
+      return topic;
     };
 
     return buildTree(id);

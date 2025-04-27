@@ -3,7 +3,7 @@ import { Topic } from "./topic.entity";
 import { BaseTopic } from "./base-topic.entity";
 
 @Entity()
-export class TopicVersion extends BaseTopic {
+export class TopicHistory extends BaseTopic {
   @ManyToOne(() => Topic, (topic) => topic.children)
   topic: Topic;
 }

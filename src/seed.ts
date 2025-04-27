@@ -35,7 +35,7 @@ async function seed() {
   for (const u of demoUsers) {
     await userService.createUser(u);
   }
-
+  /*
   const tsRoot = await topicService.createTopic({
     name: "TypeScript Basics",
     content: "Intro to TS",
@@ -70,7 +70,7 @@ async function seed() {
   }
 
   await buildDeepTree(undefined, 1, 5);
-
+  */
   console.log("✅ Seed complete!");
   await AppDataSource.destroy();
 }
