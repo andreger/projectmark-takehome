@@ -1,5 +1,5 @@
-import * as jwt from "jsonwebtoken";
-import * as bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 import { User } from "../user/entities/user.entity";
 import { AppDataSource } from "../shared/database";
 import { TokenPayload } from "./dto/token-payload";
@@ -14,9 +14,9 @@ export class AuthService {
     });
 
     if (!user) return null;
-    // const isValid = await bcrypt.compare(password, user.password);
-    // return isValid ? user : null;
-    return user;
+
+    const isValid = await bcrypt.compare(password, user.password);
+    return isValid ? user : null;
   }
 
   generateToken(user: User): string {
