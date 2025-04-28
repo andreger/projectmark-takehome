@@ -2,6 +2,7 @@ import { Router } from "express";
 import { TopicController } from "./topic.controller";
 import { validateBody } from "../shared/middleware/validation.middleware";
 import { CreateTopicDto } from "./dto/create-topic.dto";
+import { UpdateTopicDto } from "./dto/update-topic.dto";
 import { authorize } from "../shared/middleware/authorize.middleware";
 
 const router = Router();
@@ -24,7 +25,7 @@ router.get(
 );
 router.patch(
   "/:id",
-  authorize("canEditTopic"),
+  [authorize("canEditTopic"), validateBody(UpdateTopicDto)],
   controller.updateTopic.bind(controller)
 );
 router.delete(
