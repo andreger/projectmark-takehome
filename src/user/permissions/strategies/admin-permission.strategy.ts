@@ -4,4 +4,6 @@ export class AdminPermissionStrategy implements PermissionStrategy {
   canViewTopic = () => true;
   canEditTopic = () => true;
   canDeleteTopic = () => true;
+  canManageUsers = () => true;
+  canManageResources = () => true;
 }

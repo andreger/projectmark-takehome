@@ -39,6 +39,14 @@ export class TopicController {
     );
   }
 
+  /**
+   * Retrieves a topic by id.
+   *
+   * @param req The request containing the topic id
+   * @param res The response containing the topic
+   * @param next The next function in the middleware chain
+   * @throws {NotFoundError} If the topic is not found
+   */
   async getTopic(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     const topic = await this.topicService.getTopic(id);
@@ -76,7 +84,6 @@ export class TopicController {
    * @param req The request containing the topic id and update data
    * @param res The response containing the updated topic
    */
-
   async updateTopic(req: Request, res: Response) {
     const { id } = req.params;
     const dto: UpdateTopicDto = req.body;

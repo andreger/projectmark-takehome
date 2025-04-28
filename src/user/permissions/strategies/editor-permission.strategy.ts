@@ -4,4 +4,6 @@ export class EditorPermissionStrategy implements PermissionStrategy {
   canViewTopic = () => true;
   canEditTopic = () => true;
   canDeleteTopic = () => false;
+  canManageUsers = () => false;
+  canManageResources = () => true;
 }

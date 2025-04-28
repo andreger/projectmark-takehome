@@ -4,4 +4,6 @@ export class ViewerPermissionStrategy implements PermissionStrategy {
   canViewTopic = () => true;
   canEditTopic = () => false;
   canDeleteTopic = () => false;
+  canManageUsers = () => false;
+  canManageResources = () => false;
 }

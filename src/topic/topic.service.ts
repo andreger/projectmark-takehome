@@ -77,7 +77,6 @@ export class TopicService {
    * @param version The version number of the topic to retrieve
    * @returns The topic history of the specified version, or null if not found
    */
-
   async getTopicHistory(
     id: string,
     version: number
@@ -97,6 +96,7 @@ export class TopicService {
    */
   async updateTopic(id: string, dto: UpdateTopicDto): Promise<Topic> {
     return this.topicRepository.manager.transaction(async (manager) => {
+      " ";
       // Find the current topic
       const current = await manager.findOne(Topic, {
         where: { id },
@@ -167,7 +167,6 @@ export class TopicService {
    * @returns A promise that resolves to an array of topics representing the shortest path.
    * @throws {NotFoundError} If the topics are in different trees or a topic is not found.
    */
-
   async findShortestPath(fromId: string, toId: string): Promise<Topic[]> {
     if (fromId === toId) return this.singleNodePath(fromId);
 
@@ -188,7 +187,6 @@ export class TopicService {
    * @returns A promise that resolves to an array with the single topic if found.
    * @throws {NotFoundError} If the topic is not found.
    */
-
   private async singleNodePath(id: string): Promise<Topic[]> {
     const node = await this.topicRepository.findOne({ where: { id } });
 
@@ -208,7 +206,6 @@ export class TopicService {
    * @returns A promise that resolves to an array of topics representing the ancestor chain.
    *          The array starts with the topic itself and ends with the root ancestor.
    */
-
   private async buildAncestorChain(id: string): Promise<Topic[]> {
     const chain: Topic[] = [];
     let current = await this.getTopicSummary(id);

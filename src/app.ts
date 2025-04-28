@@ -1,7 +1,7 @@
 import express from "express";
 import authRoutes from "./auth/auth.routes";
 import { buildContainer } from "./bootstrap";
-import userRoutes from "./user/user.routes";
+import { createUserRouter } from "./user/user.routes";
 import { authenticate } from "./shared/middleware/authenticate.middleware";
 import { errorHandler } from "./shared/middleware/error-handler.middleware";
 import { createTopicRouter } from "./topic/topic.routes";
@@ -16,7 +16,7 @@ export const createApp = async () => {
   // Routes
   app.use("/api/auth", authRoutes);
   app.use("/api/topics", authenticate, createTopicRouter(controllers.topic));
-  app.use("/api/users", authenticate, userRoutes);
+  app.use("/api/users", authenticate, createUserRouter(controllers.user));
 
   // Error handler
   app.use(errorHandler);

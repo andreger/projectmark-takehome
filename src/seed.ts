@@ -12,10 +12,11 @@ import { TopicHistoryFactory } from "./topic/factories/topic-history.factory";
 
 async function seed() {
   await AppDataSource.initialize();
-  console.log("Database connected!");
 
   await seedUsers();
   await seedTopics();
+
+  await AppDataSource.destroy();
 }
 
 const seedUsers = async () => {
