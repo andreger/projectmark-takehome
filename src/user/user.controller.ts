@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
-import { NotFoundError } from "../shared/errors";
 
 export class UserController {
   constructor(private userService: UserService) {}
@@ -11,10 +10,10 @@ export class UserController {
    *
    * Retrieves all users from the database and responds with their data in JSON format.
    *
-   * @param req The request containing no parameters
+   * @param _req The request containing no parameters
    * @param res The response containing the list of users
    */
-  async listUsers(req: Request, res: Response) {
+  async listUsers(_req: Request, res: Response) {
     const users = await this.userService.listUsers();
     res.json(users);
   }
@@ -34,9 +33,6 @@ export class UserController {
   async getUser(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     const user = await this.userService.getUser(id);
-
-    if (!user) return next(new NotFoundError("User not found"));
-
     res.json(user);
   }
 
@@ -55,12 +51,31 @@ export class UserController {
     res.status(201).json(user);
   }
 
+  /**
+   * Updates a user.
+   *
+   * Retrieves the user ID from the request parameters and the update data from the request body.
+   * Updates the user using the provided data and responds with the updated user data in JSON format.
+   *
+   * @param req The request containing the user ID and update data
+   * @param res The response containing the updated user
+   */
   async updateUser(req: Request, res: Response) {
     const { id } = req.params;
     const dto: CreateUserDto = req.body;
     const user = await this.userService.updateUser(id, dto);
     res.json(user);
   }
+
+  /**
+   * Deletes a user by ID.
+   *
+   * Retrieves the user ID from the request parameters and deletes the user from the database.
+   * Responds with a 204 status code if the deletion is successful.
+   *
+   * @param req The request containing the user ID
+   * @param res The response indicating the status of the deletion
+   */
 
   async deleteUser(req: Request, res: Response) {
     const { id } = req.params;

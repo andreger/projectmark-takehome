@@ -3,13 +3,13 @@ import { TopicController } from "./topic.controller";
 import { CreateTopicDto } from "./dto/create-topic.dto";
 import { UpdateTopicDto } from "./dto/update-topic.dto";
 import { authorize } from "../shared/middleware/authorize.middleware";
-import { IDTopicDto } from "./dto/id-topic.dto";
 import {
   validateBody,
   validateParams,
 } from "../shared/middleware/validate.middleware";
 import { GetVersionTopicDto } from "./dto/get-version-topic";
 import { ShortestPathDto } from "./dto/shortest-path.dto";
+import { OnlyIDDto } from "../shared/dto/only-id.dto";
 
 export function createTopicRouter(controller: TopicController): Router {
   const router = Router();
@@ -26,7 +26,7 @@ export function createTopicRouter(controller: TopicController): Router {
   );
   router.get(
     "/:id",
-    [authorize("canViewTopic"), validateParams(IDTopicDto)],
+    [authorize("canViewTopic"), validateParams(OnlyIDDto)],
     controller.getTopic.bind(controller)
   );
   router.get(
@@ -41,12 +41,12 @@ export function createTopicRouter(controller: TopicController): Router {
   );
   router.delete(
     "/:id",
-    [authorize("canDeleteTopic"), validateParams(IDTopicDto)],
+    [authorize("canDeleteTopic"), validateParams(OnlyIDDto)],
     controller.deleteTopic.bind(controller)
   );
   router.get(
     "/:id/tree",
-    [authorize("canViewTopic"), validateParams(IDTopicDto)],
+    [authorize("canViewTopic"), validateParams(OnlyIDDto)],
     controller.getTopicTree.bind(controller)
   );
   router.get(

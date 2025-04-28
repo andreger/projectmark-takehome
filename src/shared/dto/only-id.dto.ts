@@ -1,6 +1,6 @@
 import { IsUUID } from "class-validator";
 
-export class IDTopicDto {
+export class OnlyIDDto {
   @IsUUID()
   id: string;
 }
