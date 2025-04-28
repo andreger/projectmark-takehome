@@ -13,7 +13,9 @@ export function validateBody<T extends object>(dtoClass: ClassConstructor<T>) {
         Object.values(error.constraints || {})
       );
       next(
-        new BadRequestError("Validation failed: " + errorMessages.join(", "))
+        new BadRequestError(
+          "Validation errors found: " + errorMessages.join(", ")
+        )
       );
       return;
     }

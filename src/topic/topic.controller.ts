@@ -3,6 +3,8 @@ import { TopicService } from "./topic.service";
 import { CreateTopicDto } from "./dto/create-topic.dto";
 import { UpdateTopicDto } from "./dto/update-topic.dto";
 import { NotFoundError } from "../shared/errors";
+import { PermissionContext } from "../user/permissions/permission-context";
+import { TokenPayload } from "../auth/dto/token-payload";
 
 export class TopicController {
   private topicService = new TopicService();
@@ -32,13 +34,6 @@ export class TopicController {
   }
 
   async updateTopic(req: Request, res: Response) {
-    // const user = req.user as User;
-    // const permission = new PermissionContext(user);
-
-    // if (!permission.canEditTopic(user, existingTopic)) {
-    //   return res.status(403).json({ error: "Forbidden" });
-    // }
-
     const { id } = req.params;
     const dto: UpdateTopicDto = req.body;
     const topic = await this.topicService.updateTopic(id, dto);

@@ -12,13 +12,8 @@ export const createApp = () => {
 
   // Routes
   app.use("/api/auth", authRoutes);
-  app.use("/api/topics", topicRoutes);
-  app.use("/api/users", userRoutes);
-
-  // Protected route
-  app.get("/api/protected", authenticate, (req, res) => {
-    res.json({ message: `Hello ${req.user?.email}!` });
-  });
+  app.use("/api/topics", authenticate, topicRoutes);
+  app.use("/api/users", authenticate, userRoutes);
 
   // Error handler
   app.use(errorHandler);
