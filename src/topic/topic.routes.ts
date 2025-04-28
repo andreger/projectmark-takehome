@@ -19,36 +19,43 @@ export function createTopicRouter(controller: TopicController): Router {
     authorize("canViewTopic"),
     controller.listTopics.bind(controller)
   );
+
   router.post(
     "/",
     [authorize("canEditTopic"), validateBody(CreateTopicDto)],
     controller.createTopic.bind(controller)
   );
+
   router.get(
     "/:id",
     [authorize("canViewTopic"), validateParams(OnlyIDDto)],
     controller.getTopic.bind(controller)
   );
+
   router.get(
     "/:id/version/:version",
     [authorize("canViewTopic"), validateParams(GetVersionTopicDto)],
     controller.getTopicHistory.bind(controller)
   );
+
   router.patch(
     "/:id",
     [authorize("canEditTopic"), validateBody(UpdateTopicDto)],
     controller.updateTopic.bind(controller)
   );
+
   router.delete(
     "/:id",
     [authorize("canDeleteTopic"), validateParams(OnlyIDDto)],
     controller.deleteTopic.bind(controller)
   );
+
   router.get(
     "/:id/tree",
     [authorize("canViewTopic"), validateParams(OnlyIDDto)],
     controller.getTopicTree.bind(controller)
   );
+
   router.get(
     "/:fromId/path/:toId",
     [authorize("canViewTopic"), validateParams(ShortestPathDto)],

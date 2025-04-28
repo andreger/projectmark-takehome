@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import { User } from "./entities/user.entity";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { NotFoundError } from "../shared/errors";
+import { UpdateUserDto } from "./dto/update-user.dto";
 
 export class UserService {
   private userRepository = AppDataSource.getRepository(User);
@@ -55,12 +56,16 @@ export class UserService {
    * @param dto An object that contains the user's updated information.
    * @returns The updated user, or null if not found
    */
-  async updateUser(id: string, dto: CreateUserDto): Promise<User> {
+  async updateUser(id: string, dto: UpdateUserDto): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { id },
     });
 
     if (!user) throw new NotFoundError("Topic not found");
+
+    if (dto.password) {
+      dto.password = await this.hashPassword(dto.password);
+    }
 
     await this.userRepository.update(id, dto);
 
