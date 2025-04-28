@@ -17,5 +17,5 @@ export class UpdateTopicDto {
 
   @IsOptional()
   @IsUUID()
-  parentTopicId?: string;
+  parentId?: string;
 }

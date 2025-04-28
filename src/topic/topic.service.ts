@@ -25,12 +25,12 @@ export class TopicService {
   /**
    * Creates a topic.
    *
-   * If parentTopicId is specified, it will create the topic as a child of the
-   * specified parent topic. If parentTopicId is not specified, it will create
+   * If parentId is specified, it will create the topic as a child of the
+   * specified parent topic. If parentId is not specified, it will create
    * the topic as a root node.
    *
    * @param dto The create topic data
-   * @throws {BadRequestError} If parentTopicId is specified but the parent topic is not found
+   * @throws {BadRequestError} If parentId is specified but the parent topic is not found
    * @returns The created topic
    */
   async createTopic(dto: CreateTopicDto): Promise<Topic> {
@@ -38,9 +38,9 @@ export class TopicService {
       // Create and save the topic
       const topic = this.topicFactory.create(dto);
 
-      if (dto.parentTopicId) {
+      if (dto.parentId) {
         const parent = await manager.findOne(Topic, {
-          where: { id: dto.parentTopicId },
+          where: { id: dto.parentId },
         });
         if (!parent) throw new BadRequestError("Parent topic not found");
 
@@ -98,7 +98,7 @@ export class TopicService {
       // Find the current topic
       const current = await manager.findOne(Topic, {
         where: { id },
-        relations: ["parentTopic"],
+        relations: ["parent"],
       });
 
       if (!current) throw new NotFoundError("Topic not found");

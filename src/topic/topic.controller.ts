@@ -21,14 +21,14 @@ export class TopicController {
   /**
    * Creates a topic.
    *
-   * If parentTopicId is specified in the request body, it will create the topic as a child of the
-   * specified parent topic. If parentTopicId is not specified, it will create the topic as a root node.
+   * If parentId is specified in the request body, it will create the topic as a child of the
+   * specified parent topic. If parentId is not specified, it will create the topic as a root node.
    *
    * The created topic is returned in the response.
    *
    * @param req The request containing the topic data
    * @param res The response containing the created topic
-   * @throws {BadRequestError} If parentTopicId is specified but the parent topic is not found
+   * @throws {BadRequestError} If parentId is specified but the parent topic is not found
    */
   async createTopic(req: Request, res: Response) {
     const dto: CreateTopicDto = req.body;

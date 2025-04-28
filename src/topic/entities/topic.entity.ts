@@ -2,14 +2,19 @@ import { Entity, OneToMany, Tree, TreeChildren, TreeParent } from "typeorm";
 import { BaseTopic } from "./base-topic.entity";
 import { TopicComponent } from "../interfaces/topic-component.interface";
 import { TopicHistory } from "./topic-history.entity";
+import { HasHierarchy } from "../../shared/interfaces/has-hierachy.interface";
+import { HasHistory } from "../../shared/interfaces/has-history.interface";
 
 @Entity()
 @Tree("closure-table")
-export class Topic extends BaseTopic implements TopicComponent {
+export class Topic
+  extends BaseTopic
+  implements TopicComponent, HasHierarchy<Topic>, HasHistory<TopicHistory>
+{
   @TreeParent({
     onDelete: "CASCADE",
   })
-  parentTopic: Topic;
+  parent: Topic;
 
   @TreeChildren({ cascade: true })
   children: Topic[];
@@ -20,7 +25,7 @@ export class Topic extends BaseTopic implements TopicComponent {
   histories: TopicHistory[];
 
   add(child: Topic) {
-    child.parentTopic = this;
+    child.parent = this;
     (this.children ??= []).push(child);
   }
 

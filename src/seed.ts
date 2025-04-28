@@ -44,29 +44,29 @@ async function seed() {
   const tsPrimitives = await topicService.createTopic({
     name: "Primitive Types",
     content: "string | number | boolean …",
-    parentTopicId: tsRoot.id,
+    parentId: tsRoot.id,
   });
   await topicService.createTopic({
     name: "Generics",
     content: "Using <T> properly",
-    parentTopicId: tsRoot.id,
+    parentId: tsRoot.id,
   });
 
   const tsInterfaces = await topicService.createTopic({
     name: "Interfaces",
     content: "Interfaces are like classes",
-    parentTopicId: tsPrimitives.id,
+    parentId: tsPrimitives.id,
   });
   await topicService.createTopic({
     name: "Classes",
     content: "Classes are like interfaces",
-    parentTopicId: tsPrimitives.id,
+    parentId: tsPrimitives.id,
   });
 
   await topicService.createTopic({
     name: "Functions",
     content: "Functions are like functions",
-    parentTopicId: tsInterfaces.id,
+    parentId: tsInterfaces.id,
   });
 
   console.log("✅ Seed complete!");
