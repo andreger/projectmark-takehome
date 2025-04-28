@@ -1,9 +1,14 @@
 import { Router } from "express";
 import { TopicController } from "./topic.controller";
-import { validateBody } from "../shared/middleware/validation.middleware";
 import { CreateTopicDto } from "./dto/create-topic.dto";
 import { UpdateTopicDto } from "./dto/update-topic.dto";
 import { authorize } from "../shared/middleware/authorize.middleware";
+import { IDTopicDto } from "./dto/id-topic.dto";
+import {
+  validateBody,
+  validateParams,
+} from "../shared/middleware/validate.middleware";
+import { GetVersionTopicDto } from "./dto/get-version-topic";
 
 const router = Router();
 const controller = new TopicController();
@@ -20,8 +25,13 @@ router.post(
 );
 router.get(
   "/:id",
-  authorize("canViewTopic"),
+  [authorize("canViewTopic"), validateParams(IDTopicDto)],
   controller.getTopic.bind(controller)
+);
+router.get(
+  "/:id/version/:version",
+  [authorize("canViewTopic"), validateParams(GetVersionTopicDto)],
+  controller.getTopicHistory.bind(controller)
 );
 router.patch(
   "/:id",
@@ -30,12 +40,12 @@ router.patch(
 );
 router.delete(
   "/:id",
-  authorize("canDeleteTopic"),
+  [authorize("canDeleteTopic"), validateParams(IDTopicDto)],
   controller.deleteTopic.bind(controller)
 );
 router.get(
   "/:id/tree",
-  authorize("canViewTopic"),
+  [authorize("canViewTopic"), validateParams(IDTopicDto)],
   controller.getTopicTree.bind(controller)
 );
 

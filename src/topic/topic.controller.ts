@@ -40,27 +40,30 @@ export class TopicController {
     );
   }
 
-  /**
-   * Finds a topic by id and optional version.
-   *
-   * If version is specified, it will return the topic with that version.
-   * If version is not specified, it will return the latest version of the topic.
-   *
-   * It will return null if the topic is not found.
-   *
-   * @param id The id of the topic to find
-   * @param version The version of the topic to find
-   * @returns The topic with the specified id and version, or null if not found
-   */
   async getTopic(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
-    const { version } = req.query;
-    const topic = await this.topicService.getTopic(
-      id,
-      version ? Number(version) : undefined
-    );
+    const topic = await this.topicService.getTopic(id);
 
     if (!topic) return next(new NotFoundError("Topic not found"));
+
+    res.json(topic);
+  }
+
+  /**
+   * Retrieves a topic history by id and version.
+   *
+   * Retrieves the topic id and version from the request parameters and the topic history from the database.
+   * Responds with the topic history, or a 404 error if the topic or version is not found.
+   *
+   * @param req The request containing the topic id and version
+   * @param res The response containing the topic history
+   * @param next The next function in the middleware chain
+   */
+  async getTopicHistory(req: Request, res: Response, next: NextFunction) {
+    const { id, version } = req.params;
+    const topic = await this.topicService.getTopicHistory(id, Number(version));
+
+    if (!topic) return next(new NotFoundError("Topic or version not found"));
 
     res.json(topic);
   }

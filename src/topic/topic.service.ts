@@ -9,6 +9,7 @@ import { TopicFactory } from "./factories/topic.factory";
 
 export class TopicService {
   private topicRepository = AppDataSource.getTreeRepository(Topic);
+  private topicHistoryRepository = AppDataSource.getRepository(TopicHistory);
   private topicFactory: TopicFactory = new TopicFactory();
   private topicHistoryFactory: TopicHistoryFactory = new TopicHistoryFactory();
 
@@ -56,28 +57,31 @@ export class TopicService {
   }
 
   /**
-   * Finds a topic by id and optional version.
+   * Retrieves a topic by id.
    *
-   * If version is specified, it will return the topic with that version.
-   * If version is not specified, it will return the latest version of the topic.
-   *
-   * It will return null if the topic is not found.
-   *
-   * @param id The id of the topic to find
-   * @param version The version of the topic to find
-   * @returns The topic with the specified id and version, or null if not found
+   * @param id The topic's id
+   * @returns The topic with the specified id, or null if not found
    */
-  async getTopic(id: string, version?: number): Promise<Topic | null> {
-    if (version) {
-      return this.topicRepository.findOne({
-        where: { id, version },
-      });
-    }
-
-    // Return latest version by default
+  async getTopic(id: string): Promise<Topic | null> {
     return this.topicRepository.findOne({
       where: { id },
-      order: { version: "DESC" },
+    });
+  }
+
+  /**
+   * Retrieves the history of a specific topic version by id.
+   *
+   * @param id The id of the topic to retrieve history for
+   * @param version The version number of the topic to retrieve
+   * @returns The topic history of the specified version, or null if not found
+   */
+
+  async getTopicHistory(
+    id: string,
+    version: number
+  ): Promise<TopicHistory | null> {
+    return this.topicHistoryRepository.findOne({
+      where: { topic: { id }, version },
     });
   }
 
