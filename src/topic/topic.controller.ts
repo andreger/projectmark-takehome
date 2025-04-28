@@ -3,8 +3,7 @@ import { TopicService } from "./topic.service";
 import { CreateTopicDto } from "./dto/create-topic.dto";
 import { UpdateTopicDto } from "./dto/update-topic.dto";
 import { NotFoundError } from "../shared/errors";
-import { PermissionContext } from "../user/permissions/permission-context";
-import { TokenPayload } from "../auth/dto/token-payload";
+import { instanceToPlain } from "class-transformer";
 
 export class TopicController {
   private topicService = new TopicService();
@@ -17,7 +16,11 @@ export class TopicController {
   async createTopic(req: Request, res: Response) {
     const dto: CreateTopicDto = req.body;
     const topic = await this.topicService.createTopic(dto);
-    res.status(201).json(topic);
+    res.status(201).json(
+      instanceToPlain(topic, {
+        enableCircularCheck: true,
+      })
+    );
   }
 
   async getTopic(req: Request, res: Response, next: NextFunction) {

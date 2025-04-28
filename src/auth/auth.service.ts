@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { User } from "../user/entities/user.entity";
+import { User, UserRole } from "../user/entities/user.entity";
 import { AppDataSource } from "../shared/database";
 import { TokenPayload } from "./dto/token-payload";
 
@@ -23,7 +23,7 @@ export class AuthService {
     const payload: TokenPayload = {
       userId: user.id,
       email: user.email,
-      role: user.role,
+      role: user.role as UserRole,
     };
     return jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: "1h" });
   }

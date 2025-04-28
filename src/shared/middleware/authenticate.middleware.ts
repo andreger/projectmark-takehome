@@ -16,7 +16,7 @@ export function authenticate(req: Request, res: Response, next: NextFunction) {
   const token = authHeader?.split(" ")[1];
 
   if (!token) {
-    next(new UnauthorizedError("Authentication required"));
+    next(new UnauthorizedError("You must be logged in"));
     return;
   }
 
@@ -25,6 +25,6 @@ export function authenticate(req: Request, res: Response, next: NextFunction) {
     req.user = decoded;
     next();
   } catch (err) {
-    next(new ForbiddenError("Invalid token"));
+    next(new ForbiddenError("You are not allowed to perform this action"));
   }
 }
