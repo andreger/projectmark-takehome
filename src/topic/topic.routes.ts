@@ -10,43 +10,44 @@ import {
 } from "../shared/middleware/validate.middleware";
 import { GetVersionTopicDto } from "./dto/get-version-topic";
 
-const router = Router();
-const controller = new TopicController();
+export function createTopicRouter(controller: TopicController): Router {
+  const router = Router();
 
-router.get(
-  "/",
-  authorize("canViewTopic"),
-  controller.listTopics.bind(controller)
-);
-router.post(
-  "/",
-  [authorize("canEditTopic"), validateBody(CreateTopicDto)],
-  controller.createTopic.bind(controller)
-);
-router.get(
-  "/:id",
-  [authorize("canViewTopic"), validateParams(IDTopicDto)],
-  controller.getTopic.bind(controller)
-);
-router.get(
-  "/:id/version/:version",
-  [authorize("canViewTopic"), validateParams(GetVersionTopicDto)],
-  controller.getTopicHistory.bind(controller)
-);
-router.patch(
-  "/:id",
-  [authorize("canEditTopic"), validateBody(UpdateTopicDto)],
-  controller.updateTopic.bind(controller)
-);
-router.delete(
-  "/:id",
-  [authorize("canDeleteTopic"), validateParams(IDTopicDto)],
-  controller.deleteTopic.bind(controller)
-);
-router.get(
-  "/:id/tree",
-  [authorize("canViewTopic"), validateParams(IDTopicDto)],
-  controller.getTopicTree.bind(controller)
-);
+  router.get(
+    "/",
+    authorize("canViewTopic"),
+    controller.listTopics.bind(controller)
+  );
+  router.post(
+    "/",
+    [authorize("canEditTopic"), validateBody(CreateTopicDto)],
+    controller.createTopic.bind(controller)
+  );
+  router.get(
+    "/:id",
+    [authorize("canViewTopic"), validateParams(IDTopicDto)],
+    controller.getTopic.bind(controller)
+  );
+  router.get(
+    "/:id/version/:version",
+    [authorize("canViewTopic"), validateParams(GetVersionTopicDto)],
+    controller.getTopicHistory.bind(controller)
+  );
+  router.patch(
+    "/:id",
+    [authorize("canEditTopic"), validateBody(UpdateTopicDto)],
+    controller.updateTopic.bind(controller)
+  );
+  router.delete(
+    "/:id",
+    [authorize("canDeleteTopic"), validateParams(IDTopicDto)],
+    controller.deleteTopic.bind(controller)
+  );
+  router.get(
+    "/:id/tree",
+    [authorize("canViewTopic"), validateParams(IDTopicDto)],
+    controller.getTopicTree.bind(controller)
+  );
 
-export default router;
+  return router;
+}

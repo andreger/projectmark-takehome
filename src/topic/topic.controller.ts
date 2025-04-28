@@ -6,8 +6,7 @@ import { NotFoundError } from "../shared/errors";
 import { instanceToPlain } from "class-transformer";
 
 export class TopicController {
-  private topicService = new TopicService();
-
+  constructor(private readonly topicService: TopicService) {}
   /**
    * Retrieves all topics.
    *

@@ -1,4 +1,4 @@
-import { AppDataSource } from "../shared/database";
+import { Repository, TreeRepository } from "typeorm";
 import { BadRequestError, NotFoundError } from "../shared/errors";
 import { CreateTopicDto } from "./dto/create-topic.dto";
 import { UpdateTopicDto } from "./dto/update-topic.dto";
@@ -8,10 +8,12 @@ import { TopicHistoryFactory } from "./factories/topic-history.factory";
 import { TopicFactory } from "./factories/topic.factory";
 
 export class TopicService {
-  private topicRepository = AppDataSource.getTreeRepository(Topic);
-  private topicHistoryRepository = AppDataSource.getRepository(TopicHistory);
-  private topicFactory: TopicFactory = new TopicFactory();
-  private topicHistoryFactory: TopicHistoryFactory = new TopicHistoryFactory();
+  constructor(
+    private readonly topicRepository: TreeRepository<Topic>,
+    private readonly topicHistoryRepository: Repository<TopicHistory>,
+    private readonly topicFactory: TopicFactory,
+    private readonly topicHistoryFactory: TopicHistoryFactory
+  ) {}
 
   /**
    * Retrieves all topics.

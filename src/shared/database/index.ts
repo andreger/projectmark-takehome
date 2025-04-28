@@ -13,6 +13,6 @@ export const AppDataSource = new DataSource({
   entities: [Topic, TopicHistory, User],
 });
 
-AppDataSource.initialize()
-  .then(() => console.log("Database connected!"))
-  .catch((err) => console.error("Database error:", err));
+// AppDataSource.initialize()
+//   .then(() => console.log("Database connected!"))
+//   .catch((err) => console.error("Database error:", err));
