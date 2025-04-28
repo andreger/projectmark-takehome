@@ -12,8 +12,13 @@ export class TopicService {
   private topicFactory: TopicFactory = new TopicFactory();
   private topicHistoryFactory: TopicHistoryFactory = new TopicHistoryFactory();
 
+  /**
+   * Retrieves all topics.
+   *
+   * @returns An array of topics
+   */
   async listTopics(): Promise<Topic[]> {
-    return this.topicRepository.findTrees();
+    return this.topicRepository.find();
   }
 
   /**
@@ -39,11 +44,8 @@ export class TopicService {
         if (!parent) throw new BadRequestError("Parent topic not found");
 
         parent.add(topic);
-        await manager.save(parent);
-      } else {
-        // root node
-        await manager.save(topic);
       }
+      await manager.save(topic);
 
       // Create and save the topic history
       const history = this.topicHistoryFactory.create(topic);
@@ -76,7 +78,6 @@ export class TopicService {
     return this.topicRepository.findOne({
       where: { id },
       order: { version: "DESC" },
-      relations: ["parentTopic", "children"],
     });
   }
 
@@ -110,11 +111,17 @@ export class TopicService {
     });
   }
 
+  /**
+   * Deletes a topic and all its versions.
+   *
+   * @param id The topic's id
+   * @throws {NotFoundError} If the topic is not found
+   * @throws {InternalServerError} If the deletion fails
+   */
   async deleteTopic(id: string): Promise<void> {
     await this.topicRepository.manager.transaction(async (manager) => {
       const topic = await manager.findOne(Topic, {
         where: { id },
-        relations: ["versions"],
       });
 
       if (!topic) throw new NotFoundError("Topic not found");
@@ -127,6 +134,13 @@ export class TopicService {
     });
   }
 
+  /**
+   * Retrieves a topic and all its descendants as a tree.
+   *
+   * @param id The topic's id
+   * @throws {NotFoundError} If the topic is not found
+   * @returns The topic and its descendants as a nested object
+   */
   async getTopicTree(id: string): Promise<Topic> {
     const root = await this.topicRepository.findOneBy({ id });
     if (!root) throw new NotFoundError("Topic not found");

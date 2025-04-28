@@ -1,20 +1,23 @@
-import {
-  Entity,
-  ManyToOne,
-  OneToMany,
-  TreeChildren,
-  TreeParent,
-} from "typeorm";
+import { Entity, OneToMany, Tree, TreeChildren, TreeParent } from "typeorm";
 import { BaseTopic } from "./base-topic.entity";
 import { TopicComponent } from "../interfaces/topic-component.interface";
+import { TopicHistory } from "./topic-history.entity";
 
 @Entity()
+@Tree("closure-table")
 export class Topic extends BaseTopic implements TopicComponent {
-  @TreeParent()
+  @TreeParent({
+    onDelete: "CASCADE",
+  })
   parentTopic: Topic;
 
   @TreeChildren({ cascade: true })
   children: Topic[];
+
+  @OneToMany(() => TopicHistory, (history) => history.topic, {
+    cascade: true,
+  })
+  histories: TopicHistory[];
 
   add(child: Topic) {
     child.parentTopic = this;

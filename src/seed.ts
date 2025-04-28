@@ -68,27 +68,7 @@ async function seed() {
     content: "Functions are like functions",
     parentTopicId: tsInterfaces.id,
   });
-  /*
-  async function buildDeepTree(
-    parentId: string | undefined,
-    level: number,
-    max: number
-  ) {
-    if (level > max) return;
 
-    const siblings = randomInt(1, 4); // 1-3 children
-    for (let i = 1; i <= siblings; i++) {
-      const node = await topicService.createTopic({
-        name: `Layer ${level} – Node ${i}`,
-        content: `Content for layer ${level}, node ${i}`,
-        parentTopicId: parentId,
-      });
-      await buildDeepTree(node.id, level + 1, max);
-    }
-  }
-
-  await buildDeepTree(undefined, 1, 5);
-  */
   console.log("✅ Seed complete!");
   await AppDataSource.destroy();
 }

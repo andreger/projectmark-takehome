@@ -4,6 +4,8 @@ import { BaseTopic } from "./base-topic.entity";
 
 @Entity()
 export class TopicHistory extends BaseTopic {
-  @ManyToOne(() => Topic, (topic) => topic.children)
+  @ManyToOne(() => Topic, (topic) => topic.histories, {
+    onDelete: "CASCADE",
+  })
   topic: Topic;
 }
