@@ -1,40 +1,66 @@
 import "reflect-metadata";
-import { randomInt } from "crypto";
+
 import { AppDataSource } from "./shared/database";
 
 import { UserService } from "./user/user.service";
 import { TopicService } from "./topic/topic.service";
-import { User, UserRole } from "./user/entities/user.entity";
+import { UserRole } from "./user/entities/user.entity";
+import { Topic } from "./topic/entities/topic.entity";
+import { TopicHistory } from "./topic/entities/topic-history.entity";
+import { TopicFactory } from "./topic/factories/topic.factory";
+import { TopicHistoryFactory } from "./topic/factories/topic-history.factory";
 
 async function seed() {
-  const userService = new UserService();
-  const topicService = new TopicService();
+  await AppDataSource.initialize();
+  console.log("Database connected!");
 
-  /* ------------ users (run sequentially) ------------ */
-  const demoUsers = [
+  await seedUsers();
+  await seedTopics();
+}
+
+const seedUsers = async () => {
+  const userService = new UserService();
+
+  const users = [
     {
-      name: "Alice",
-      email: "alice@example.com",
-      password: "alice123",
+      name: "Admin",
+      email: "admin@example.com",
+      password: "admin123",
       role: UserRole.ADMIN,
     },
     {
-      name: "Bob",
-      email: "bob@example.com",
-      password: "bob123",
+      name: "Editor",
+      email: "editor@example.com",
+      password: "editor123",
       role: UserRole.EDITOR,
     },
     {
-      name: "Carlos",
-      email: "carlos@example.com",
-      password: "carlos123",
+      name: "Viewer",
+      email: "viewer@example.com",
+      password: "viewer123",
       role: UserRole.VIEWER,
     },
   ];
 
-  for (const u of demoUsers) {
-    await userService.createUser(u);
+  for (const user of users) {
+    console.log(user);
+    await userService.createUser(user);
   }
+};
+
+const seedTopics = async () => {
+  const topicRepository = AppDataSource.getTreeRepository(Topic);
+  const topicHistoryRepository = AppDataSource.getRepository(TopicHistory);
+
+  const topicFactory: TopicFactory = new TopicFactory();
+  const topicHistoryFactory: TopicHistoryFactory = new TopicHistoryFactory();
+
+  const topicService = new TopicService(
+    topicRepository,
+    topicHistoryRepository,
+    topicFactory,
+    topicHistoryFactory
+  );
 
   const tsRoot = await topicService.createTopic({
     name: "TypeScript Basics",
@@ -68,10 +94,7 @@ async function seed() {
     content: "Functions are like functions",
     parentId: tsInterfaces.id,
   });
-
-  console.log("✅ Seed complete!");
-  await AppDataSource.destroy();
-}
+};
 
 seed().catch((e) => {
   console.error(e);
