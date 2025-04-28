@@ -9,6 +9,7 @@ import {
   validateParams,
 } from "../shared/middleware/validate.middleware";
 import { GetVersionTopicDto } from "./dto/get-version-topic";
+import { ShortestPathDto } from "./dto/shortest-path.dto";
 
 export function createTopicRouter(controller: TopicController): Router {
   const router = Router();
@@ -47,6 +48,11 @@ export function createTopicRouter(controller: TopicController): Router {
     "/:id/tree",
     [authorize("canViewTopic"), validateParams(IDTopicDto)],
     controller.getTopicTree.bind(controller)
+  );
+  router.get(
+    "/:fromId/path/:toId",
+    [authorize("canViewTopic"), validateParams(ShortestPathDto)],
+    controller.getShortestPath.bind(controller)
   );
 
   return router;

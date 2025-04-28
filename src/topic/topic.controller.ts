@@ -113,4 +113,21 @@ export class TopicController {
     const tree = await this.topicService.getTopicTree(id);
     res.json(tree);
   }
+
+  /**
+   * Finds the shortest path from one topic to another.
+   *
+   * Retrieves the from id and to id from the request parameters and finds the
+   * shortest path between the two topics. Responds with the path, or a 404 error
+   * if the from or to topic is not found.
+   *
+   * @param req The request containing the from and to topic ids
+   * @param res The response containing the path
+   * @throws {NotFoundError} If the from or to topic is not found
+   */
+  async getShortestPath(req: Request, res: Response) {
+    const { fromId, toId } = req.params;
+    const path = await this.topicService.findShortestPath(fromId, toId);
+    res.json(path);
+  }
 }
