@@ -1,17 +1,18 @@
-import { Transform } from "class-transformer";
 import { IsString, IsOptional, IsUUID, Length } from "class-validator";
+import { Trim } from "../../shared/database/trim.decorator";
+import { validation } from "../../config/validation";
 
 export class UpdateTopicDto {
   @IsOptional()
   @IsString()
-  @Length(3, 100)
-  @Transform(({ value }) => value?.trim())
+  @Length(validation.topic.name.min, validation.topic.name.max)
+  @Trim()
   name: string;
 
   @IsOptional()
   @IsString()
-  @Length(10, 5000)
-  @Transform(({ value }) => value?.trim())
+  @Length(validation.topic.content.min, validation.topic.content.max)
+  @Trim()
   content: string;
 
   @IsOptional()
