@@ -40,6 +40,27 @@ https://www.linkedin.com/in/andregervasio/
 
 5. Access the API on `http://localhost:3000`.
 
+## Database
+
+The project uses **SQLite** for local development:
+
+- The database is stored in a file:  
+  **`database.sqlite`** (located in the project root).
+- The file is automatically created **if it does not exist** when you run:
+  ```bash
+  docker compose up -d
+  ```
+- You can **delete** the `database.sqlite` file at any time to reset the database.
+- After deleting or recreating the database, **remember to seed it again** using the command below.
+
+## Database Seeding
+
+To insert default users and sample topics:
+
+```bash
+docker exec projectmark_api npm run seed
+```
+
 ## Default Users
 
 | Email                | Password    | Role   |
