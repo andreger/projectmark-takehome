@@ -9,7 +9,7 @@ export class AuthController {
     const { email, password } = req.body as LoginDto;
 
     const user = await this.authService.validateUser(email, password);
-    console.log(user);
+
     if (!user) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
