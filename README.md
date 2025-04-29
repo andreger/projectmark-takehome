@@ -151,3 +151,5 @@ Authorization: Bearer <access_token>
   Actions like creating, updating, or deleting require appropriate permissions based on the user's role (Admin, Editor, Viewer).
 - **Validation**:  
   All incoming requests are validated using DTOs (`class-validator`).
+- **Good Practices (Disclaimer)**:
+  Due to time constraints, some architectural and engineering best practices — such as more granular service/repository/factory abstractions, unit and integration testing, and advanced modularization — were not fully implemented. These would be prioritized in a production-ready version of this project.
