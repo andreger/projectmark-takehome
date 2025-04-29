@@ -4,7 +4,7 @@ import { AppDataSource } from "./shared/database";
 
 import { UserService } from "./user/user.service";
 import { TopicService } from "./topic/topic.service";
-import { UserRole } from "./user/entities/user.entity";
+import { User, UserRole } from "./user/entities/user.entity";
 import { Topic } from "./topic/entities/topic.entity";
 import { TopicHistory } from "./topic/entities/topic-history.entity";
 import { TopicFactory } from "./topic/factories/topic.factory";
@@ -20,7 +20,8 @@ async function seed() {
 }
 
 const seedUsers = async () => {
-  const userService = new UserService();
+  const userRepository = AppDataSource.getRepository(User);
+  const userService = new UserService(userRepository);
 
   const users = [
     {
@@ -44,7 +45,6 @@ const seedUsers = async () => {
   ];
 
   for (const user of users) {
-    console.log(user);
     await userService.createUser(user);
   }
 };

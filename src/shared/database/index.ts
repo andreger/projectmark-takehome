@@ -6,7 +6,8 @@ import { Resource } from "../../resource/entities/resource.entity";
 
 export const AppDataSource = new DataSource({
   type: "sqlite",
-  database: ":memory:",
+  // database: ":memory:",
+  database: "../../../database.sqlite",
   synchronize: true,
   logging: true,
   entities: [Resource, Topic, TopicHistory, User],
