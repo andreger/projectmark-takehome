@@ -1,5 +1,5 @@
 import { IsString, IsOptional, IsUUID, Length } from "class-validator";
-import { Trim } from "../../shared/database/trim.decorator";
+import { Trim } from "../../shared/decorators/trim.decorator";
 import { validation } from "../../config/validation";
 
 export class UpdateTopicDto {

@@ -4,6 +4,7 @@ import { TopicComponent } from "../interfaces/topic-component.interface";
 import { TopicHistory } from "./topic-history.entity";
 import { HasHierarchy } from "../../shared/interfaces/has-hierachy.interface";
 import { HasHistory } from "../../shared/interfaces/has-history.interface";
+import { Resource } from "../../resource/entities/resource.entity";
 
 @Entity()
 @Tree("closure-table")
@@ -23,6 +24,11 @@ export class Topic
     cascade: true,
   })
   histories: TopicHistory[];
+
+  @OneToMany(() => Resource, (resource) => resource.topic, {
+    cascade: true,
+  })
+  resources: Resource[];
 
   add(child: Topic) {
     child.parent = this;

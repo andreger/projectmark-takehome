@@ -6,7 +6,7 @@ import {
   IsIn,
   IsOptional,
 } from "class-validator";
-import { Trim } from "../../shared/database/trim.decorator";
+import { Trim } from "../../shared/decorators/trim.decorator";
 import { validation } from "../../config/validation";
 import { UserRole } from "../entities/user.entity";
 

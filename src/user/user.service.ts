@@ -1,12 +1,12 @@
-import { AppDataSource } from "../shared/database";
 import bcrypt from "bcrypt";
 import { User } from "./entities/user.entity";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { NotFoundError } from "../shared/errors";
 import { UpdateUserDto } from "./dto/update-user.dto";
+import { Repository } from "typeorm";
 
 export class UserService {
-  private userRepository = AppDataSource.getRepository(User);
+  constructor(private readonly userRepository: Repository<User>) {}
 
   /**
    * Creates a new user and saves it to the database.
@@ -44,7 +44,7 @@ export class UserService {
       where: { id },
     });
 
-    if (!user) throw new NotFoundError("Topic not found");
+    if (!user) throw new NotFoundError("User not found");
 
     return user;
   }
@@ -61,7 +61,7 @@ export class UserService {
       where: { id },
     });
 
-    if (!user) throw new NotFoundError("Topic not found");
+    if (!user) throw new NotFoundError("User not found");
 
     if (dto.password) {
       dto.password = await this.hashPassword(dto.password);
@@ -82,7 +82,7 @@ export class UserService {
       where: { id },
     });
 
-    if (!user) throw new NotFoundError("Topic not found");
+    if (!user) throw new NotFoundError("User not found");
 
     await this.userRepository.delete(id);
   }
