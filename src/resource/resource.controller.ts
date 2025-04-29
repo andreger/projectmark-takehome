@@ -1,6 +1,7 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { ResourceService } from "./resource.service";
 import { CreateResourceDto } from "./dto/create-resource.dto";
+import { UpdateResourceDto } from "./dto/update-resource.dto";
 
 export class ResourceController {
   constructor(private resourceService: ResourceService) {}
@@ -27,10 +28,9 @@ export class ResourceController {
    *
    * @param req The request containing the resource ID
    * @param res The response containing the resource data
-   * @param next The next function in the middleware chain
    */
 
-  async getResource(req: Request, res: Response, next: NextFunction) {
+  async getResource(req: Request, res: Response) {
     const { id } = req.params;
     const resource = await this.resourceService.getResource(id);
     res.json(resource);
@@ -62,7 +62,7 @@ export class ResourceController {
    */
   async updateResource(req: Request, res: Response) {
     const { id } = req.params;
-    const dto: CreateResourceDto = req.body;
+    const dto: UpdateResourceDto = req.body;
     const resource = await this.resourceService.updateResource(id, dto);
     res.json(resource);
   }

@@ -3,8 +3,8 @@ import {
   Length,
   IsNotEmpty,
   IsIn,
-  IsInt,
   IsUrl,
+  IsUUID,
 } from "class-validator";
 import { Trim } from "../../shared/decorators/trim.decorator";
 import { validation } from "../../config/validation";
@@ -29,6 +29,6 @@ export class CreateResourceDto {
   type: string;
 
   @IsNotEmpty()
-  @IsInt()
-  topicId: number;
+  @IsUUID()
+  topicId: string;
 }

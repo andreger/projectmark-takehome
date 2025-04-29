@@ -1,8 +1,7 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { TopicService } from "./topic.service";
 import { CreateTopicDto } from "./dto/create-topic.dto";
 import { UpdateTopicDto } from "./dto/update-topic.dto";
-import { NotFoundError } from "../shared/errors";
 import { instanceToPlain } from "class-transformer";
 
 export class TopicController {
@@ -44,15 +43,11 @@ export class TopicController {
    *
    * @param req The request containing the topic id
    * @param res The response containing the topic
-   * @param next The next function in the middleware chain
    * @throws {NotFoundError} If the topic is not found
    */
-  async getTopic(req: Request, res: Response, next: NextFunction) {
+  async getTopic(req: Request, res: Response) {
     const { id } = req.params;
     const topic = await this.topicService.getTopic(id);
-
-    if (!topic) return next(new NotFoundError("Topic not found"));
-
     res.json(topic);
   }
 
@@ -64,14 +59,10 @@ export class TopicController {
    *
    * @param req The request containing the topic id and version
    * @param res The response containing the topic history
-   * @param next The next function in the middleware chain
    */
-  async getTopicHistory(req: Request, res: Response, next: NextFunction) {
+  async getTopicHistory(req: Request, res: Response) {
     const { id, version } = req.params;
     const topic = await this.topicService.getTopicHistory(id, Number(version));
-
-    if (!topic) return next(new NotFoundError("Topic or version not found"));
-
     res.json(topic);
   }
 

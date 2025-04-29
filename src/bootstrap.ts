@@ -36,7 +36,7 @@ export async function buildContainer() {
     topicFactory,
     topicHistoryFactory
   );
-  const resourceService = new ResourceService(resourceRepository);
+  const resourceService = new ResourceService(resourceRepository, topicService);
   const userService = new UserService(userRepository);
 
   // Controllers

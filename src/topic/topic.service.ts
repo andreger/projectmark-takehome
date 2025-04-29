@@ -62,12 +62,16 @@ export class TopicService {
    * Retrieves a topic by id.
    *
    * @param id The topic's id
-   * @returns The topic with the specified id, or null if not found
+   * @returns The topic with the specified id
    */
-  async getTopic(id: string): Promise<Topic | null> {
-    return this.topicRepository.findOne({
+  async getTopic(id: string): Promise<Topic> {
+    const topic = await this.topicRepository.findOne({
       where: { id },
     });
+
+    if (!topic) throw new NotFoundError("Resource not found");
+
+    return topic;
   }
 
   /**
@@ -75,15 +79,16 @@ export class TopicService {
    *
    * @param id The id of the topic to retrieve history for
    * @param version The version number of the topic to retrieve
-   * @returns The topic history of the specified version, or null if not found
+   * @returns The topic history of the specified version
    */
-  async getTopicHistory(
-    id: string,
-    version: number
-  ): Promise<TopicHistory | null> {
-    return this.topicHistoryRepository.findOne({
+  async getTopicHistory(id: string, version: number): Promise<TopicHistory> {
+    const topicHistory = await this.topicHistoryRepository.findOne({
       where: { topic: { id }, version },
     });
+
+    if (!topicHistory) throw new NotFoundError("Resource not found");
+
+    return topicHistory;
   }
 
   /**
@@ -149,7 +154,9 @@ export class TopicService {
    */
   async getTopicTree(id: string): Promise<Topic> {
     const root = await this.topicRepository.findOneBy({ id });
+
     if (!root) throw new NotFoundError("Topic not found");
+
     return this.topicRepository.findDescendantsTree(root);
   }
 

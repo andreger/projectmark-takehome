@@ -2,11 +2,10 @@ import {
   IsString,
   Length,
   IsNotEmpty,
-  IsEmail,
   IsIn,
-  IsInt,
   IsUrl,
   IsOptional,
+  IsUUID,
 } from "class-validator";
 import { Trim } from "../../shared/decorators/trim.decorator";
 import { validation } from "../../config/validation";
@@ -35,6 +34,6 @@ export class UpdateResourceDto {
 
   @IsOptional()
   @IsNotEmpty()
-  @IsInt()
-  topicId: number;
+  @IsUUID()
+  topicId: string;
 }

@@ -1,12 +1,15 @@
-import { AppDataSource } from "../shared/database";
 import { Resource } from "./entities/resource.entity";
 import { CreateResourceDto } from "./dto/create-resource.dto";
-import { NotFoundError } from "../shared/errors";
+import { BadRequestError, NotFoundError } from "../shared/errors";
 import { UpdateResourceDto } from "./dto/update-resource.dto";
 import { Repository } from "typeorm";
+import { TopicService } from "../topic/topic.service";
 
 export class ResourceService {
-  constructor(private readonly resourceRepository: Repository<Resource>) {}
+  constructor(
+    private readonly resourceRepository: Repository<Resource>,
+    private readonly topicService: TopicService
+  ) {}
 
   /**
    * Creates a new resource and saves it to the database.
@@ -15,6 +18,12 @@ export class ResourceService {
    */
   async createResource(dto: CreateResourceDto): Promise<Resource> {
     const resource = this.resourceRepository.create(dto);
+
+    const topic = await this.topicService.getTopic(dto.topicId);
+
+    if (!topic) throw new BadRequestError("Topic not found");
+
+    resource.topic = topic;
 
     return this.resourceRepository.save(resource);
   }
@@ -52,14 +61,15 @@ export class ResourceService {
    * @returns The updated resource
    */
   async updateResource(id: string, dto: UpdateResourceDto): Promise<Resource> {
-    const resource = await this.resourceRepository.findOne({
-      where: { id },
+    const resource = await this.resourceRepository.preload({
+      id,
+      ...dto,
+      topic: dto.topicId ? { id: dto.topicId } : undefined,
     });
 
     if (!resource) throw new NotFoundError("Resource not found");
 
-    await this.resourceRepository.update(id, dto);
-
+    await this.resourceRepository.save(resource); // persists both scalars & relations
     return this.getResource(id);
   }
 
