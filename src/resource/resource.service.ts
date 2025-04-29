@@ -17,15 +17,16 @@ export class ResourceService {
    * @returns The newly created resource.
    */
   async createResource(dto: CreateResourceDto): Promise<Resource> {
-    const resource = this.resourceRepository.create(dto);
+    try {
+      const resource = this.resourceRepository.create(dto);
+      const topic = await this.topicService.getTopic(dto.topicId);
 
-    const topic = await this.topicService.getTopic(dto.topicId);
+      resource.topic = topic;
 
-    if (!topic) throw new BadRequestError("Topic not found");
-
-    resource.topic = topic;
-
-    return this.resourceRepository.save(resource);
+      return this.resourceRepository.save(resource);
+    } catch (error) {
+      throw new BadRequestError("Topic not found");
+    }
   }
 
   /**

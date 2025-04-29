@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import { User } from "./entities/user.entity";
 import { CreateUserDto } from "./dto/create-user.dto";
-import { NotFoundError } from "../shared/errors";
+import { ConflictError, NotFoundError } from "../shared/errors";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { Repository } from "typeorm";
 
@@ -13,7 +13,9 @@ export class UserService {
    * @param dto An object that contains the user's information.
    * @returns The newly created user.
    */
-  async createUser(dto: CreateUserDto): Promise<User> {
+  async createUser(dto: CreateUserDto): Promise<Omit<User, "password">> {
+    await this.ensureEmailIsAvailable(dto.email);
+
     const hashedPassword = await this.hashPassword(dto.password);
 
     const user = this.userRepository.create({
@@ -21,7 +23,10 @@ export class UserService {
       password: hashedPassword,
     });
 
-    return this.userRepository.save(user);
+    const savedUser = await this.userRepository.save(user);
+    const { password, ...userWithoutPassword } = savedUser;
+
+    return userWithoutPassword;
   }
 
   /**
@@ -63,6 +68,10 @@ export class UserService {
 
     if (!user) throw new NotFoundError("User not found");
 
+    if (dto.email && dto.email !== user.email) {
+      await this.ensureEmailIsAvailable(dto.email);
+    }
+
     if (dto.password) {
       dto.password = await this.hashPassword(dto.password);
     }
@@ -85,6 +94,22 @@ export class UserService {
     if (!user) throw new NotFoundError("User not found");
 
     await this.userRepository.delete(id);
+  }
+
+  /**
+   * Verifies that the provided email address is not already in use.
+   *
+   * @param email The email address to check
+   * @throws ConflictError if the email address is already in use
+   */
+  private async ensureEmailIsAvailable(email: string): Promise<void> {
+    const existingUser = await this.userRepository.findOne({
+      where: { email },
+    });
+
+    if (existingUser) {
+      throw new ConflictError("Email already in use");
+    }
   }
 
   /**
