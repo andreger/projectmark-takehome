@@ -48,13 +48,13 @@ export class TopicService {
 
         parent.add(topic);
       }
-      await manager.save(topic);
+      const persisted = await manager.save(topic);
 
       // Create and save the topic history
       const history = this.topicHistoryFactory.create(topic);
       await manager.save(TopicHistory, history);
 
-      return topic;
+      return persisted;
     });
   }
 
@@ -93,6 +93,7 @@ export class TopicService {
 
   /**
    * Updates a topic and its history.
+   *
    * @param id The topic's id
    * @param dto The update data
    * @returns The updated topic
@@ -101,24 +102,24 @@ export class TopicService {
    */
   async updateTopic(id: string, dto: UpdateTopicDto): Promise<Topic> {
     return this.topicRepository.manager.transaction(async (manager) => {
-      " ";
-      // Find the current topic
-      const current = await manager.findOne(Topic, {
-        where: { id },
-        relations: ["parent"],
+      // Preload the topic
+      const current = await manager.preload(Topic, {
+        id,
+        ...dto,
+        parent: dto.parentId ? { id: dto.parentId } : undefined,
       });
 
       if (!current) throw new NotFoundError("Topic not found");
 
       // Update the topic
       const updatedTopic = this.topicFactory.create(dto, current);
-      await manager.update(Topic, id, updatedTopic);
+      const persisted = await manager.save(Topic, updatedTopic);
 
       // Create and save the topic history
       const history = this.topicHistoryFactory.create(updatedTopic);
       await manager.save(TopicHistory, history);
 
-      return updatedTopic;
+      return persisted;
     });
   }
 
